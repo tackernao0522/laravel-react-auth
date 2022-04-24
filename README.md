@@ -303,3 +303,334 @@ return [
 ```
 
 - `$ npm install axios sweetalert`を実行<br>
+
+## 05 フロントエンドの実装
+
+- `$ touch resources/js/components/Register.jsx`を実行<br>
+
+* `resources/js/components/Register.jsx`を編集<br>
+
+```jsx:Register.jsx
+import axios from 'axios'
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import swal from 'sweetalert'
+
+export const Register = () => {
+  const history = useHistory()
+
+  const [registerInput, setRegister] = useState({
+    name: '',
+    email: '',
+    password: '',
+    error_list: [],
+  })
+
+  const handleInput = (e) => {
+    e.persist()
+    setRegister({ ...registerInput, [e.target.name]: e.target.value })
+  }
+
+  const registerSubmit = (e) => {
+    e.preventDefault()
+
+    const data = {
+      name: registerInput.name,
+      email: registerInput.email,
+      password: registerInput.password,
+    }
+
+    axios.get('/sanctum/csrf-cookie').then((response) => {
+      axios.post(`/api/register`, data).then((res) => {
+        if (res.data.status === 200) {
+          localStorage.setItem('auth_token', res.data.token)
+          localStorage.setItem('auth_name', res.data.username)
+          swal('Success', res.data.message, 'success')
+          history.pushState('/')
+        } else {
+          setRegister({
+            ...registerInput,
+            error_list: res.data.validation_erros,
+          })
+        }
+      })
+    })
+  }
+
+  return (
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-6 mx-auto">
+          <div className="card">
+            <div className="card-header">
+              <h4>Register</h4>
+            </div>
+            <div className="card-body">
+              <form onSubmit={registerSubmit}>
+                <div className="form-group mb-3">
+                  <label>User Name</label>
+                  <input
+                    type=""
+                    name="name"
+                    onChange={handleInput}
+                    value={registerInput.name}
+                    className="form-control"
+                  />
+                  <span>{registerInput.error_list.name}</span>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Mail Address</label>
+                  <input
+                    type=""
+                    name="email"
+                    onChange={handleInput}
+                    value={registerInput.email}
+                    className="form-control"
+                  />
+                  <span>{registerInput.error_list.email}</span>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Password</label>
+                  <input
+                    type=""
+                    name="password"
+                    onChange={handleInput}
+                    value={registerInput.password}
+                    className="form-control"
+                  />
+                  <span>{registerInput.error_list.password}</span>
+                </div>
+                <div className="form-group mb-3">
+                  <button type="submit" className="btn btn-primary">
+                    Register
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+- `$ touch resources/js/components/Login.jsx`を実行<br>
+
+* `resources/js/components/Login.jsx`を編集<br>
+
+```jsx:Login.jsx
+import axios from 'axios'
+import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import swal from 'sweetalert'
+
+export const Login = () => {
+  const history = useHistory()
+
+  const [loginInput, setLogin] = useState({
+    email: '',
+    password: '',
+    error_list: [],
+  })
+
+  const handleInput = (e) => {
+    e.persist()
+    setLogin({ ...loginInput, [e.target.name]: e.target.value })
+  }
+
+  const loginSubmit = (e) => {
+    e.preventDefault()
+
+    const data = {
+      email: loginInput.email,
+      password: loginInput.password,
+    }
+    axios.get('/sanctum/csrf-cookie').then((Response) => {
+      axios.post(`api/login`, data).then((res) => {
+        if (res.data.status === 200) {
+          localStorage.setItem('auth_token', res.data.token)
+          localStorage.setItem('auth_name', res.data.username)
+          swal('ログイン成功', res.data.message, 'success')
+          history.push('/')
+          location.reload()
+        } else if (res.data.status === 401) {
+          swal('注意', res.data.message, 'warning')
+        } else {
+          setLogin({ ...loginInput, error_list: res.data.validation_errors })
+        }
+      })
+    })
+  }
+
+  return (
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-6 mx-auto">
+          <div className="card">
+            <div className="card-header">
+              <h4>Login</h4>
+            </div>
+            <div className="card-body">
+              <form onSubmit={loginSubmit}>
+                <div className="form-group mb-3">
+                  <label>Mail Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    onChange={handleInput}
+                    value={loginInput.email}
+                    className="form-control"
+                  />
+                  <span>{loginInput.error_list.email}</span>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    onChange={handleInput}
+                    value={loginInput.password}
+                    className="form-control"
+                  />
+                  <span>{loginInput.error_list.password}</span>
+                </div>
+                <div className="form-group mb-3">
+                  <button type="submit" className="btn btn-primary">
+                    Login
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+- `resources/js/components/App.jsx`を編集<br>
+
+```jsx:App.jsx
+import axios from 'axios'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { About } from './About'
+import { GlobalNav } from './GlobalNav'
+import { Login } from './Login'
+import { Register } from './Register'
+import { Top } from './Top'
+
+// 追加
+axios.defaults.baseURL = 'http://localhost'
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.post['Accept'] = 'application/json'
+axios.defaults.withCredentials = true
+axios.interceptors.request.use(function (config) {
+  const token = localStorage.getItem('auth_token')
+  config.headers.Authorization = token ? `Bearer ${token}` : ''
+  return config
+})
+// ここまで
+
+// 編集
+function App() {
+  return (
+    <BrowserRouter>
+      <GlobalNav />
+      <Switch>
+        <Route exact path="/">
+          <Top />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  )
+}
+
+export default Example
+
+if (document.getElementById('nav')) {
+  ReactDOM.render(<App />, document.getElementById('nav'))
+}
+```
+
+- `resources/js/components/GlobalNav.jsx`を編集<br>
+
+```jsx:GlobalNav.jsx
+import axios from 'axios'
+import React from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import swal from 'sweetalert'
+
+export const GlobalNav = () => {
+  const history = useHistory()
+
+  const logoutSubmit = (e) => {
+    e.preventDefault()
+
+    axios.post(`/api/logout`).then((res) => {
+      if (res.data.status === 200) {
+        localStorage.removeItem('auth_token', res.data.token)
+        localStorage.removeItem('auth_name', res.data.username)
+        swal('ログアウトしました', res.data.message, 'success')
+        history.push('/')
+        location.reload()
+      }
+    })
+  }
+
+  var AuthButtons = ''
+
+  if (!localStorage.getItem('auth_token')) {
+    AuthButtons = (
+      <>
+        <li>
+          <Link to="/register">
+            <span>Register</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="login">
+            <span>Login</span>
+          </Link>
+        </li>
+      </>
+    )
+  } else {
+    AuthButtons = (
+      <li>
+        <div onClick={logoutSubmit}>
+          <span className="text-white">ログアウト</span>
+        </div>
+      </li>
+    )
+  }
+
+  return (
+    <ul>
+      <li>
+        <Link to="/">
+          <span>Top</span>
+        </Link>
+      </li>
+      <li>
+        <Link to="/about">
+          <span>About</span>
+        </Link>
+      </li>
+      {AuthButtons}
+    </ul>
+  )
+}
+```
