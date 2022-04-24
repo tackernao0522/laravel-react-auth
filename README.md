@@ -101,3 +101,84 @@ require('./bootstrap')
 // 編集
 require('./components/App')
 ```
+
+## 03 コンポーネントの作成
+
+- `$ mv resources/js/components/Example.js resources/js/components/App.jsx`を実行<br>
+
+* `resources/js/components/App.jsx`を編集<br>
+
+- `$ touch resources/js/components/{Top.jsx,About.jsx,GlobalNav.jsx}`を実行<br>
+
+* `resources/js/components/Top.jsx`を編集<br>
+
+```jsx:Top.jsx
+export const Top = () => {
+  return <h1>Top</h1>
+}
+```
+
+- `resources/js/components/About.jsx`を編集<br>
+
+```jsx:About.jsx
+export const About = () => {
+  return <h1>About</h1>
+}
+```
+
+- `resources/js/components/GlobalNav.jsx`を編集<br>
+
+```jsx:Global.jsx
+import React from 'react'
+import { Link } from 'react-router-dom'
+
+export const GlobalNav = () => {
+  return (
+    <ul>
+      <li>
+        <Link to="/">
+          <span>Top</span>
+        </Link>
+      </li>
+      <li>
+        <Link to="/about">
+          <span className="nav-title">About</span>
+        </Link>
+      </li>
+    </ul>
+  )
+}
+```
+
+- `resources/js/components/App.jsx`を編集<br>
+
+```jsx:App.jsx
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { About } from './About'
+import { GlobalNav } from './GlobalNav'
+import { Top } from './Top'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <GlobalNav />
+      <Switch>
+        <Route exact path="/">
+          <Top />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  )
+}
+
+export default Example
+
+if (document.getElementById('nav')) {
+  ReactDOM.render(<App />, document.getElementById('nav'))
+}
+```
