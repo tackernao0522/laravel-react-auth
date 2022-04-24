@@ -1,7 +1,52 @@
+import axios from 'axios'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import swal from 'sweetalert'
 
 export const GlobalNav = () => {
+  const history = useHistory()
+
+  const logoutSubmit = (e) => {
+    e.preventDefault()
+
+    axios.post(`/api/logout`).then((res) => {
+      if (res.data.status === 200) {
+        localStorage.removeItem('auth_token', res.data.token)
+        localStorage.removeItem('auth_name', res.data.username)
+        swal('ログアウトしました', res.data.message, 'success')
+        history.push('/')
+        location.reload()
+      }
+    })
+  }
+
+  var AuthButtons = ''
+
+  if (!localStorage.getItem('auth_token')) {
+    AuthButtons = (
+      <>
+        <li>
+          <Link to="/register">
+            <span>Register</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="login">
+            <span>Login</span>
+          </Link>
+        </li>
+      </>
+    )
+  } else {
+    AuthButtons = (
+      <li>
+        <div onClick={logoutSubmit}>
+          <span className="text-white">ログアウト</span>
+        </div>
+      </li>
+    )
+  }
+
   return (
     <ul>
       <li>
@@ -11,9 +56,10 @@ export const GlobalNav = () => {
       </li>
       <li>
         <Link to="/about">
-          <span className="nav-title">About</span>
+          <span>About</span>
         </Link>
       </li>
+      {AuthButtons}
     </ul>
   )
 }

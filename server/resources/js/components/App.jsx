@@ -1,9 +1,22 @@
+import axios from 'axios'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { About } from './About'
 import { GlobalNav } from './GlobalNav'
+import { Login } from './Login'
+import { Register } from './Register'
 import { Top } from './Top'
+
+axios.defaults.baseURL = 'http://localhost'
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.post['Accept'] = 'application/json'
+axios.defaults.withCredentials = true
+axios.interceptors.request.use(function (config) {
+  const token = localStorage.getItem('auth_token')
+  config.headers.Authorization = token ? `Bearer ${token}` : ''
+  return config
+})
 
 function App() {
   return (
@@ -15,6 +28,12 @@ function App() {
         </Route>
         <Route path="/about">
           <About />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <Route path="/login">
+          <Login />
         </Route>
       </Switch>
     </BrowserRouter>
