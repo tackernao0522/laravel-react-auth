@@ -176,8 +176,6 @@ function App() {
   )
 }
 
-export default Example
-
 if (document.getElementById('nav')) {
   ReactDOM.render(<App />, document.getElementById('nav'))
 }
@@ -346,7 +344,7 @@ export const Register = () => {
           localStorage.setItem('auth_token', res.data.token)
           localStorage.setItem('auth_name', res.data.username)
           swal('Success', res.data.message, 'success')
-          history.pushState('/')
+          history.push('/')
         } else {
           setRegister({
             ...registerInput,
@@ -558,8 +556,6 @@ function App() {
   )
 }
 
-export default Example
-
 if (document.getElementById('nav')) {
   ReactDOM.render(<App />, document.getElementById('nav'))
 }
@@ -568,10 +564,11 @@ if (document.getElementById('nav')) {
 - `resources/js/components/GlobalNav.jsx`を編集<br>
 
 ```jsx:GlobalNav.jsx
-import axios from 'axios'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import axios from 'axios'
 import swal from 'sweetalert'
+import { Button } from 'bootstrap'
 
 export const GlobalNav = () => {
   const history = useHistory()
@@ -601,7 +598,7 @@ export const GlobalNav = () => {
           </Link>
         </li>
         <li>
-          <Link to="login">
+          <Link to="/login">
             <span>Login</span>
           </Link>
         </li>
@@ -611,7 +608,9 @@ export const GlobalNav = () => {
     AuthButtons = (
       <li>
         <div onClick={logoutSubmit}>
-          <span className="text-white">ログアウト</span>
+          <button style={{ color: 'red', cursor: 'pointer' }}>
+            ログアウト
+          </button>
         </div>
       </li>
     )

@@ -1,14 +1,14 @@
-import axios from 'axios'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { About } from './About'
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom'
+import axios from 'axios'
 import { GlobalNav } from './GlobalNav'
-import { Login } from './Login'
-import { Register } from './Register'
 import { Top } from './Top'
+import { About } from './About'
+import { Register } from './Register'
+import { Login } from './Login'
 
-axios.defaults.baseURL = 'http://localhost'
+axios.defaults.baseURL = 'http://localhost/'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
 axios.defaults.withCredentials = true
@@ -39,8 +39,6 @@ function App() {
     </BrowserRouter>
   )
 }
-
-export default Example
 
 if (document.getElementById('nav')) {
   ReactDOM.render(<App />, document.getElementById('nav'))

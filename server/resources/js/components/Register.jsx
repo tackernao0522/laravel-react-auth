@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import swal from 'sweetalert'
 
@@ -33,7 +33,7 @@ export const Register = () => {
           localStorage.setItem('auth_token', res.data.token)
           localStorage.setItem('auth_name', res.data.username)
           swal('Success', res.data.message, 'success')
-          history.pushState('/')
+          history.push('/')
         } else {
           setRegister({
             ...registerInput,
