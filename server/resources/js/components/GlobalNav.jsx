@@ -1,7 +1,8 @@
-import axios from 'axios'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import axios from 'axios'
 import swal from 'sweetalert'
+import { Button } from 'bootstrap'
 
 export const GlobalNav = () => {
   const history = useHistory()
@@ -31,7 +32,7 @@ export const GlobalNav = () => {
           </Link>
         </li>
         <li>
-          <Link to="login">
+          <Link to="/login">
             <span>Login</span>
           </Link>
         </li>
@@ -41,7 +42,7 @@ export const GlobalNav = () => {
     AuthButtons = (
       <li>
         <div onClick={logoutSubmit}>
-          <span className="text-white">ログアウト</span>
+          <button style={{ color: 'red', cursor: 'pointer' }}>ログアウト</button>
         </div>
       </li>
     )

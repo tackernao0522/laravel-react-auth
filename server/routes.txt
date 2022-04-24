@@ -1,0 +1,12 @@
++--------+----------+---------------------+------+------------------------------------------------------------+------------------------------------------+
+| Domain | Method   | URI                 | Name | Action                                                     | Middleware                               |
++--------+----------+---------------------+------+------------------------------------------------------------+------------------------------------------+
+|        | POST     | api/login           |      | App\Http\Controllers\API\AuthController@login              | api                                      |
+|        | POST     | api/logout          |      | App\Http\Controllers\API\AuthController@logout             | api                                      |
+|        |          |                     |      |                                                            | App\Http\Middleware\Authenticate:sanctum |
+|        | POST     | api/register        |      | App\Http\Controllers\API\AuthController@register           | api                                      |
+|        | GET|HEAD | api/user            |      | Closure                                                    | api                                      |
+|        |          |                     |      |                                                            | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | sanctum/csrf-cookie |      | Laravel\Sanctum\Http\Controllers\CsrfCookieController@show | web                                      |
+|        | GET|HEAD | {any}               |      | Closure                                                    | web                                      |
++--------+----------+---------------------+------+------------------------------------------------------------+------------------------------------------+
